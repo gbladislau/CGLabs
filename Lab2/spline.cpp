@@ -68,7 +68,7 @@ void display(void)
       for (i = 0; i < 4; i++) 
          glVertex3fv(&ctrlpoints[i][0]);
    glEnd();
-   
+   glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 4, &ctrlpoints[0][0]);
    glutSwapBuffers();
 }
 
@@ -99,7 +99,7 @@ float recalc (int value){
 }
 
 bool isInRange(GLfloat coordenadas[3]){
-   if (sqrt(pow(recalc(mouseCoordanates.previousX)-coordenadas[0],2)+ pow(recalc(mouseCoordanates.previousY)-coordenadas[1],2) >= recalc(30)))
+   if (sqrt(pow(recalc(mouseCoordanates.previousX)-coordenadas[0],2)+ pow(recalc(TAMANHO_JANELA-mouseCoordanates.previousY)-(coordenadas[1]),2) <= recalc(30)))
       return true;
    return false;
 }
