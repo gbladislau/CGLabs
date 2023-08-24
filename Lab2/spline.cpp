@@ -44,7 +44,7 @@ void init(void)
    //Define a area/volume de visualizacao. Os objetos desenhados devem estar dentro desta area
    glOrtho(0.0, size, 0.0, size, 0.0 , size);
 }
-
+int n = 30;
 void display(void)
 {
    int i;
@@ -52,7 +52,7 @@ void display(void)
    glClear(GL_COLOR_BUFFER_BIT);
    
    /* Desenha a curva aproximada por n+1 pontos. */
-   int n = 30;
+ 
    glColor3f(1.0, 1.0, 1.0);
    glBegin(GL_LINE_STRIP);
       for (i = 0; i <= n; i++){
@@ -104,6 +104,33 @@ bool isInRange(GLfloat coordenadas[3]){
    return false;
 }
 
+int keyStatus[256];
+
+void keyPress(unsigned char key, int x, int y)
+{
+    keyStatus[(int)(key)] = 1;
+    glutPostRedisplay();
+}
+
+void keyUp(unsigned char key, int x, int y)
+{
+    keyStatus[(int)(key)] = 0;
+    glutPostRedisplay();
+}
+
+void idle(void)
+{
+   if (keyStatus['+'])
+   {
+      n++;
+   }
+   if (keyStatus['-']){
+      n--;
+   }
+    
+   glutPostRedisplay();
+}
+
 void moveNearestPoint(int x, int y){
    for (int i = 0; i < 4; i++)
    {
@@ -143,6 +170,11 @@ int main(int argc, char** argv)
    glutInitWindowPosition (100, 100);
    glutCreateWindow (argv[0]);
    init ();
+
+   glutKeyboardFunc(keyPress);
+   glutKeyboardUpFunc(keyUp);
+   glutIdleFunc(idle);
+
    glutDisplayFunc(display);
    glutMouseFunc(mouse);
    glutMotionFunc(motion);
