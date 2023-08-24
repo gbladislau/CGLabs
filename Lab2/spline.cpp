@@ -2,6 +2,8 @@
 #include <GL/glu.h>
 #include <stdlib.h>
 #include <GL/glut.h>
+#include <math.h>
+#include <stdio.h>
 #define TAMANHO_JANELA 500
 
 struct MouseCoordanates{
@@ -12,7 +14,8 @@ MouseCoordanates mouseCoordanates;
 
 struct MovingPoint
 {
-   GLfloat previousPointCoordenates[2] = {0.0,0.0};
+   GLfloat previousX = 0.0;
+   GLfloat previousY = 0.0;
    int pointIndex = 0;
    bool isMoving = false;
 };
@@ -91,35 +94,45 @@ void reshape(int w, int h)
    glLoadIdentity();
 }
 
-float reshape (int value){
+float recalc (int value){
    return (float) value / TAMANHO_JANELA;
 }
 
 bool isInRange(GLfloat coordenadas[3]){
-
+   if (sqrt(pow(recalc(mouseCoordanates.previousX)-coordenadas[0],2)+ pow(recalc(mouseCoordanates.previousY)-coordenadas[1],2) >= recalc(30)))
+      return true;
+   return false;
 }
 
-int moveNearestPoint(int x, int y){
+void moveNearestPoint(int x, int y){
    for (int i = 0; i < 4; i++)
    {
       if(isInRange(ctrlpoints[i])){
-
+         printf("ACHEI um  %d", i);
+         movingPoint.isMoving = true;
+         movingPoint.pointIndex = i;
+         movingPoint.previousX = ctrlpoints[i][0];
+         movingPoint.previousY = ctrlpoints[i][1];
+         break;
       }
    }
-   return -1;
 }
 
 void mouse(int button, int state, int x, int y){
+   mouseCoordanates.previousX = x;
+   mouseCoordanates.previousY = y;
    if (!state){
       moveNearestPoint(x,y);
-   }
+   } else movingPoint.isMoving = false;
+   glutPostRedisplay();
 }
 
 void motion(int x, int y){
    if(movingPoint.isMoving){
-      ctrlpoints[movingPoint.pointIndex][0] = movingPoint.previousPointCoordenates[0] + ;
-      ctrlpoints[movingPoint.pointIndex][1] = movingPoint.previousPointCoordenates[1] - ;
+      ctrlpoints[movingPoint.pointIndex][0] = (movingPoint.previousX + recalc(x - mouseCoordanates.previousX)) ;
+      ctrlpoints[movingPoint.pointIndex][1] = (movingPoint.previousY - recalc(y - mouseCoordanates.previousY)) ;
    }
+   glutPostRedisplay();
 }
 
 int main(int argc, char** argv)
