@@ -4,8 +4,8 @@
 #include <stdio.h>
 #define TAMANHO_JANELA 600
 
-float gX = 0.25;
-float gY = 0.25;
+float gX = 0.0;
+float gY = 0.0;
 int keyStatus[256];
 
 int initialSquareX = 0;
@@ -19,10 +19,10 @@ void display(void)
     glColor3f(1.0, 0.8, 0.0);
     /* Desenhar um polígono branco (retângulo) */
     glBegin(GL_POLYGON);
-        glVertex3f(      gX,       gY, 0.0);
-        glVertex3f(0.5 + gX,       gY, 0.0);
-        glVertex3f(0.5 + gX, 0.5 + gY, 0.0);
-        glVertex3f(      gX, 0.5 + gY, 0.0);
+        glVertex3f(0.25 + gX, 0.25 + gY, 0.0);
+        glVertex3f(0.75 + gX, 0.25 + gY, 0.0);
+        glVertex3f(0.75 + gX, 0.75 + gY, 0.0);
+        glVertex3f(0.25 + gX, 0.75 + gY, 0.0);
     glEnd();
 
     /* Desenhar no frame buffer! */
@@ -66,21 +66,21 @@ void mouse(int button, int state, int x, int y)
     initialMouseY = y;
     printf("x, y, button, state : (%f, %f, %d, %d)\n", (float)(x) / TAMANHO_JANELA, (float)(y) / TAMANHO_JANELA, button, state);
     printf("gX, gY, : (%f, %f)\n", gX, gY);
-    printf("%i\n", ((float)x / TAMANHO_JANELA >= gX && (float)x / TAMANHO_JANELA <= gX + 0.5 &&
-        (float)y / TAMANHO_JANELA >= gY && (float)y / TAMANHO_JANELA <= gY + 0.5));
- 
-    if ((float)x / TAMANHO_JANELA >= gX && (float)x / TAMANHO_JANELA <= gX + 0.5 &&
-        (float)y / TAMANHO_JANELA >= gY && (float)y / TAMANHO_JANELA <= gY + 0.5){
-        //printf("Click no Quadrado !!!   ");
+    printf("%i\n", (((float)x / TAMANHO_JANELA >= 0.25 + gX )&& ((float)x / TAMANHO_JANELA <= gX + 0.75 )&&
+        ((float)y / TAMANHO_JANELA >=  0.25 + gY) && ((float)y / TAMANHO_JANELA <= gY + 0.75)));
+
+    if (((float)x / TAMANHO_JANELA >= 0.25 + gX )&& ((float)x / TAMANHO_JANELA <= gX + 0.75 )&&
+        ((float)y / TAMANHO_JANELA >=  0.25 + gY) && ((float)y / TAMANHO_JANELA <= gY + 0.75) && state == 0)
+    {
         insideSquare = true;
         initialSquareX = gX;
         initialSquareY = gY;
     }
-    else insideSquare = false;
+    else
+        insideSquare = false;
 
     glutPostRedisplay();
 }
-
 
 void mouseMotion(int x, int y)
 {
@@ -88,13 +88,12 @@ void mouseMotion(int x, int y)
     if (insideSquare)
     {
         // Valor = atual - pos inicial
-        gX = initialSquareX + (((float)(x) - (float)initialMouseX)/TAMANHO_JANELA);
-        //gY = initialSquareY - (((float)(y)/TAMANHO_JANELA)  - (float)initialMouseY/TAMANHO_JANELA) ;
+        gX = initialSquareX + (((float)(x) - (float)initialMouseX) / TAMANHO_JANELA);
+        gY = initialSquareY - (((float)(y) - (float)initialMouseY) /TAMANHO_JANELA) ;
         initialSquareX = gY;
         initialSquareY = gY;
     }
     glutPostRedisplay();
-
 }
 
 void init(void)
