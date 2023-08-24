@@ -4,12 +4,27 @@
 #include <GL/glut.h>
 #define TAMANHO_JANELA 500
 
-float size = 5.0;
+struct MouseCoordanates{
+   int previousX = 0.0;
+   int previousY = 0.0;
+};
+MouseCoordanates mouseCoordanates;
+
+struct MovingPoint
+{
+   GLfloat previousPointCoordenates[2] = {0.0,0.0};
+   int pointIndex = 0;
+   bool isMoving = false;
+};
+MovingPoint movingPoint;
+
+float size = 1.0;
 
 //Pontos de controle da Spline
 GLfloat ctrlpoints[4][3] = {
-        { -4.0, -4.0, 0.0}, { -2.0, 4.0, 0.0}, 
-        {2.0, -4.0, 0.0}, {4.0, 4.0, 0.0}};
+        { 0.1, 0.1, 0.0}, { 0.3, 0.9, 0.0}, 
+        {0.7, 0.1, 0.0}, {0.9, 0.9, 0.0}};
+
 
 void init(void)
 {
@@ -24,7 +39,7 @@ void init(void)
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
    //Define a area/volume de visualizacao. Os objetos desenhados devem estar dentro desta area
-   glOrtho(-size, size, -size, size, -size, size);
+   glOrtho(0.0, size, 0.0, size, 0.0 , size);
 }
 
 void display(void)
@@ -76,6 +91,37 @@ void reshape(int w, int h)
    glLoadIdentity();
 }
 
+float reshape (int value){
+   return (float) value / TAMANHO_JANELA;
+}
+
+bool isInRange(GLfloat coordenadas[3]){
+
+}
+
+int moveNearestPoint(int x, int y){
+   for (int i = 0; i < 4; i++)
+   {
+      if(isInRange(ctrlpoints[i])){
+
+      }
+   }
+   return -1;
+}
+
+void mouse(int button, int state, int x, int y){
+   if (!state){
+      moveNearestPoint(x,y);
+   }
+}
+
+void motion(int x, int y){
+   if(movingPoint.isMoving){
+      ctrlpoints[movingPoint.pointIndex][0] = movingPoint.previousPointCoordenates[0] + ;
+      ctrlpoints[movingPoint.pointIndex][1] = movingPoint.previousPointCoordenates[1] - ;
+   }
+}
+
 int main(int argc, char** argv)
 {
    glutInit(&argc, argv);
@@ -85,7 +131,9 @@ int main(int argc, char** argv)
    glutCreateWindow (argv[0]);
    init ();
    glutDisplayFunc(display);
-   glutReshapeFunc(reshape);
+   glutMouseFunc(mouse);
+   glutMotionFunc(motion);
+   //glutReshapeFunc(reshape);
    glutMainLoop();
    return 0;
 }
