@@ -8,8 +8,13 @@ float gX = 0.0;
 float gY = 0.0;
 int keyStatus[256];
 
-int initialSquareX = 0;
-int initialSquareY = 0;
+float initialgX = 0.0;
+float initialgY = 0.0;
+int initialMouseX = 0;
+int initialMouseY = 0;
+
+bool insideSquare = false;
+
 void display(void)
 {
     /* Limpar todos os pixels  */
@@ -57,41 +62,39 @@ void idle(void)
     glutPostRedisplay();
 }
 
-int initialMouseX = 0;
-int initialMouseY = 0;
-bool insideSquare = false;
+float rescale(int value){
+    return ((float) value/ (float)TAMANHO_JANELA);
+}
+void toggleInsideSquare(){
+    insideSquare = !insideSquare;
+}
+
+bool isInside(int x, int y){
+    return (rescale(x) >= (0.25 + gX) ) && (rescale(x) <= (gX + 0.75) ) && (rescale(TAMANHO_JANELA - y) >=  (0.25 + gY)) && (rescale(TAMANHO_JANELA - y) <= (gY + 0.75));
+}
 void mouse(int button, int state, int x, int y)
 {
     initialMouseX = x;
     initialMouseY = y;
-    printf("x, y, button, state : (%f, %f, %d, %d)\n", (float)(x) / TAMANHO_JANELA, (float)(y) / TAMANHO_JANELA, button, state);
-    printf("gX, gY, : (%f, %f)\n", gX, gY);
-    printf("%i\n", (((float)x / TAMANHO_JANELA >= 0.25 + gX )&& ((float)x / TAMANHO_JANELA <= gX + 0.75 )&&
-        ((float)y / TAMANHO_JANELA >=  0.25 + gY) && ((float)y / TAMANHO_JANELA <= gY + 0.75)));
-
-    if (((float)x / TAMANHO_JANELA >= 0.25 + gX )&& ((float)x / TAMANHO_JANELA <= gX + 0.75 )&&
-        ((float)y / TAMANHO_JANELA >=  0.25 + gY) && ((float)y / TAMANHO_JANELA <= gY + 0.75) && state == 0)
+    insideSquare = false;
+    if (isInside(x,y))
     {
-        insideSquare = true;
-        initialSquareX = gX;
-        initialSquareY = gY;
+        toggleInsideSquare();
+        initialgX = gX;
+        initialgY = gY;
     }
-    else
-        insideSquare = false;
+
 
     glutPostRedisplay();
 }
 
 void mouseMotion(int x, int y)
 {
-
     if (insideSquare)
     {
-        // Valor = atual - pos inicial
-        gX = initialSquareX + (((float)(x) - (float)initialMouseX) / TAMANHO_JANELA);
-        gY = initialSquareY - (((float)(y) - (float)initialMouseY) /TAMANHO_JANELA) ;
-        initialSquareX = gY;
-        initialSquareY = gY;
+        gX = initialgX + rescale(x - initialMouseX);
+        gY = initialgY - rescale(y - initialMouseY);
+
     }
     glutPostRedisplay();
 }

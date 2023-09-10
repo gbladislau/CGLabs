@@ -2,14 +2,32 @@
 #include <GL/glu.h>
 #include <stdlib.h>
 #include <GL/glut.h>
+#include <math.h>
+#include <stdio.h>
 #define TAMANHO_JANELA 500
 
-float size = 5.0;
+struct MouseCoordanates{
+   int previousX = 0.0;
+   int previousY = 0.0;
+};
+MouseCoordanates mouseCoordanates;
+
+struct MovingPoint
+{
+   GLfloat previousX = 0.0;
+   GLfloat previousY = 0.0;
+   int pointIndex = 0;
+   bool isMoving = false;
+};
+MovingPoint movingPoint;
+
+float size = 1.0;
 
 //Pontos de controle da Spline
 GLfloat ctrlpoints[4][3] = {
-        { -4.0, -4.0, 0.0}, { -2.0, 4.0, 0.0}, 
-        {2.0, -4.0, 0.0}, {4.0, 4.0, 0.0}};
+        { 0.1, 0.1, 0.0}, { 0.3, 0.9, 0.0}, 
+        {0.7, 0.1, 0.0}, {0.9, 0.9, 0.0}};
+
 
 void init(void)
 {
@@ -24,9 +42,9 @@ void init(void)
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
    //Define a area/volume de visualizacao. Os objetos desenhados devem estar dentro desta area
-   glOrtho(-size, size, -size, size, -size, size);
+   glOrtho(0.0, size, 0.0, size, 0.0 , size);
 }
-
+int n = 30;
 void display(void)
 {
    int i;
@@ -34,7 +52,7 @@ void display(void)
    glClear(GL_COLOR_BUFFER_BIT);
    
    /* Desenha a curva aproximada por n+1 pontos. */
-   int n = 30;
+ 
    glColor3f(1.0, 1.0, 1.0);
    glBegin(GL_LINE_STRIP);
       for (i = 0; i <= n; i++){
@@ -50,7 +68,7 @@ void display(void)
       for (i = 0; i < 4; i++) 
          glVertex3fv(&ctrlpoints[i][0]);
    glEnd();
-   
+   glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 4, &ctrlpoints[0][0]);
    glutSwapBuffers();
 }
 
@@ -76,6 +94,74 @@ void reshape(int w, int h)
    glLoadIdentity();
 }
 
+float recalc (int value){
+   return (float) value / TAMANHO_JANELA;
+}
+
+bool isInRange(GLfloat coordenadas[3]){
+   if (sqrt(pow(recalc(mouseCoordanates.previousX)-coordenadas[0],2)+ pow(recalc(TAMANHO_JANELA-mouseCoordanates.previousY)-(coordenadas[1]),2) <= recalc(30)))
+      return true;
+   return false;
+}
+
+int keyStatus[256];
+
+void keyPress(unsigned char key, int x, int y)
+{
+    keyStatus[(int)(key)] = 1;
+    glutPostRedisplay();
+}
+
+void keyUp(unsigned char key, int x, int y)
+{
+    keyStatus[(int)(key)] = 0;
+    glutPostRedisplay();
+}
+
+void idle(void)
+{
+   if (keyStatus['+'])
+   {
+      n++;
+   }
+   if (keyStatus['-']){
+      n--;
+   }
+    
+   glutPostRedisplay();
+}
+
+void moveNearestPoint(int x, int y){
+   for (int i = 0; i < 4; i++)
+   {
+      if(isInRange(ctrlpoints[i])){
+         printf("ACHEI um  %d", i);
+         movingPoint.isMoving = true;
+         movingPoint.pointIndex = i;
+         movingPoint.previousX = ctrlpoints[i][0];
+         movingPoint.previousY = ctrlpoints[i][1];
+         break;
+      }
+   }
+}
+
+void mouse(int button, int state, int x, int y){
+   mouseCoordanates.previousX = x;
+   mouseCoordanates.previousY = y;
+   if (!state){
+      moveNearestPoint(x,y);
+   } else movingPoint.isMoving = false;
+   glutPostRedisplay();
+}
+
+void motion(int x, int y){
+   if(movingPoint.isMoving){
+      ctrlpoints[movingPoint.pointIndex][0] = (movingPoint.previousX + recalc(x - mouseCoordanates.previousX)) ;
+      ctrlpoints[movingPoint.pointIndex][1] = (movingPoint.previousY - recalc(y - mouseCoordanates.previousY)) ;
+   }
+   glutPostRedisplay();
+}
+
 int main(int argc, char** argv)
 {
    glutInit(&argc, argv);
@@ -84,8 +170,15 @@ int main(int argc, char** argv)
    glutInitWindowPosition (100, 100);
    glutCreateWindow (argv[0]);
    init ();
+
+   glutKeyboardFunc(keyPress);
+   glutKeyboardUpFunc(keyUp);
+   glutIdleFunc(idle);
+
    glutDisplayFunc(display);
-   glutReshapeFunc(reshape);
+   glutMouseFunc(mouse);
+   glutMotionFunc(motion);
+   //glutReshapeFunc(reshape);
    glutMainLoop();
    return 0;
 }
