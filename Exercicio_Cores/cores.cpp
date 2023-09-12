@@ -72,6 +72,10 @@ void init (void)
   glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
 }
 
+GLfloat det (GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2){
+    return x2*y1 - x1*y2;
+}
+
 void motion(int x, int y){
     //Corrige a posicao do mouse para a posicao da janela de visualizacao
     y = TAMANHO_JANELA - y;
@@ -83,11 +87,16 @@ void motion(int x, int y){
         pCliqueX = fX;
         pCliqueY = fY;
 
-        GLfloat denomX = ((pCliqueY-pBy)/(pCliqueX-pBx)) - ((pRy-pGy)/(pRx-pGx));
-        if( true){
-            GLfloat numX = pBx*((pCliqueY-pBy)/(pCliqueX-pBx)) - pGx*((pRy-pGy)/(pRx-pGx));
-            pProjX = numX/denomX;
-            pProjY = ((pCliqueY-pBy)/(pCliqueX-pBx))*(pProjX - pBx);
+        GLfloat v1X = pBx - pCliqueX;
+        GLfloat v2X = pGx - pRx;
+        GLfloat v1Y = pBy - pCliqueY;
+        GLfloat v2Y = pGy - pRy;
+
+        GLfloat determi =  det(v1X,v1Y,v2X,v2Y);
+
+        if( determi ){
+            pProjX = det(det(pBx,pBy,pCliqueX,pCliqueY),v1X,det(pRx,pRy,pGx,pGy),v2Y)/determi;
+            pProjY = det(det(pBx,pBy,pCliqueX,pCliqueY),v1Y,det(pRx,pRy,pGx,pGy),v2Y)/determi;
         }  
         printf("%f    %f\n",pProjX,pProjY);
 
