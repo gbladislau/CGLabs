@@ -97,8 +97,12 @@ void motion(int x, int y){
             pProjY = pBy +( (t_nom/t_det) * (pCliqueY - pBy) );
         }  
         
-        gB =  1 - distancia(pBx,pBy,pCliqueX,pCliqueY);
-    
+        gB =  1 - (distancia(pBx,pBy,pCliqueX,pCliqueY)/distancia(pBx,pBy,pProjX,pProjY));
+
+        gR =  1 - (distancia(pProjX,pProjY,pRx,pRy)/distancia(pRx,pRy,pGx,pGy)) * (distancia(pBx,pBy,pCliqueX,pCliqueY)/distancia(pBx,pBy,pProjX,pProjY));
+        gG = 1 - (distancia(pProjX,pProjY,pGx,pGy)/distancia(pRx,pRy,pGx,pGy)) * (distancia(pBx,pBy,pCliqueX,pCliqueY)/distancia(pBx,pBy,pProjX,pProjY));
+
+        // gR = (redDist/totalDist)*gB;
 
 
     } else if (draggingPointR){
