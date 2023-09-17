@@ -1,6 +1,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
+#include <math.h>
 #include <stdio.h>
 #define TAMANHO_JANELA 500
 
@@ -72,8 +73,8 @@ void init (void)
   glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
 }
 
-GLfloat det (GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2){
-    return x2*y1 - x1*y2;
+GLfloat distancia (GLfloat x1,GLfloat y1,GLfloat x2,GLfloat y2){
+    return sqrt(pow((x2-x1),2)+pow(y2-y1,2));
 }
 
 void motion(int x, int y){
@@ -96,6 +97,10 @@ void motion(int x, int y){
             pProjY = pBy +( (t_nom/t_det) * (pCliqueY - pBy) );
         }  
         
+        gB =  1 - distancia(pBx,pBy,pCliqueX,pCliqueY);
+    
+
+
     } else if (draggingPointR){
         pRx = (GLfloat)x/TAMANHO_JANELA;
         pRy = (GLfloat)y/TAMANHO_JANELA;
