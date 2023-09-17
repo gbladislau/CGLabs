@@ -86,20 +86,16 @@ void motion(int x, int y){
         //Atualiza posicao do clique
         pCliqueX = fX;
         pCliqueY = fY;
+        
+        GLfloat t_det = ((pBx-pCliqueX) * (pRy-pGy)) - ((pBy-pCliqueY) *(pRx -pGx));
+        //GLfloat determi =  det(v1X,v1Y,v2X,v2Y);
 
-        GLfloat v1X = pBx - pCliqueX;
-        GLfloat v2X = pGx - pRx;
-        GLfloat v1Y = pBy - pCliqueY;
-        GLfloat v2Y = pGy - pRy;
-
-        GLfloat determi =  det(v1X,v1Y,v2X,v2Y);
-
-        if( determi ){
-            pProjX = det(det(pBx,pBy,pCliqueX,pCliqueY),v1X,det(pRx,pRy,pGx,pGy),v2Y)/determi;
-            pProjY = det(det(pBx,pBy,pCliqueX,pCliqueY),v1Y,det(pRx,pRy,pGx,pGy),v2Y)/determi;
+        if( t_det ){
+            GLfloat t_nom = ((pBx-pRx)*(pRy-pGy)) - ((pBy-pRy)*(pRx-pGx));
+            pProjX = pBx +( (t_nom/t_det) * (pCliqueX - pBx) );
+            pProjY = pBy +( (t_nom/t_det) * (pCliqueY - pBy) );
         }  
-        printf("%f    %f\n",pProjX,pProjY);
-
+        
     } else if (draggingPointR){
         pRx = (GLfloat)x/TAMANHO_JANELA;
         pRy = (GLfloat)y/TAMANHO_JANELA;
