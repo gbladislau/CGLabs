@@ -99,10 +99,10 @@ void motion(int x, int y){
         
         gB =  1 - (distancia(pBx,pBy,pCliqueX,pCliqueY)/distancia(pBx,pBy,pProjX,pProjY));
 
-        gR =  1 - (distancia(pProjX,pProjY,pRx,pRy)/distancia(pRx,pRy,pGx,pGy)) * (distancia(pBx,pBy,pCliqueX,pCliqueY)/distancia(pBx,pBy,pProjX,pProjY));
-        gG = 1 - (distancia(pProjX,pProjY,pGx,pGy)/distancia(pRx,pRy,pGx,pGy)) * (distancia(pBx,pBy,pCliqueX,pCliqueY)/distancia(pBx,pBy,pProjX,pProjY));
+        gR =  (1.0 - (distancia(pProjX,pProjY,pRx,pRy)/distancia(pRx,pRy,pGx,pGy))) * (distancia(pBx,pBy,pCliqueX,pCliqueY)/distancia(pBx,pBy,pProjX,pProjY));
+        gG = (1.0 - (distancia(pProjX,pProjY,pGx,pGy)/distancia(pRx,pRy,pGx,pGy))) * (distancia(pBx,pBy,pCliqueX,pCliqueY)/distancia(pBx,pBy,pProjX,pProjY));
 
-        // gR = (redDist/totalDist)*gB;
+        printf("%f %f %f\n",gB,gR,gG);
 
 
     } else if (draggingPointR){
