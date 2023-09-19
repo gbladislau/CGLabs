@@ -178,7 +178,7 @@ int main(int argc, char *argv[])
     // Create the window.
     glutInitWindowSize(Width, Height);
     glutInitWindowPosition(150,50);
-    glutCreateWindow("Tranformations 2D");
+    glutCreateWindow("ROBOSOLNARO");
  
     // Define callbacks.
     glutDisplayFunc(renderScene);
