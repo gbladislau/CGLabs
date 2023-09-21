@@ -22,11 +22,31 @@ void Robo::DesenhaRect(GLint height, GLint width, GLfloat R, GLfloat G, GLfloat 
 
 void Robo::DesenhaCirc(GLint radius, GLfloat R, GLfloat G, GLfloat B)
 {
+    glPushMatrix();
+        glColor3f(R,G,B);
+        glPointSize(2);
+        
+        int qntdPoints = 360/20;
+        for (int p = 0; p < qntdPoints; p++){
+            glPushMatrix();
+                glTranslatef(0,radius,0);
+                glBegin(GL_POINTS);
+                    glVertex3f(0,0,0);        
+                glEnd();
+            glPopMatrix();
+            glRotatef(20,0,0,1);
+        }
 
+    glPopMatrix();
 }
 
 void Robo::DesenhaRoda(GLfloat x, GLfloat y, GLfloat thetaWheel, GLfloat R, GLfloat G, GLfloat B)
 {
+    glPushMatrix();
+        glTranslatef(x,y,0);
+        glRotatef(thetaWheel,0,0,1);
+        DesenhaCirc(radiusWheel,R,G,B);
+    glPopMatrix();
 
 }
 
@@ -54,8 +74,13 @@ void Robo::DesenhaRobo(GLfloat x, GLfloat y, GLfloat thetaWheel, GLfloat theta1,
     glLoadIdentity();
     glPushMatrix();
         glTranslatef(x,y,0);
-        DesenhaBraco(0,baseHeight,theta1,theta2,theta3);
         DesenhaRect(baseHeight,baseWidth,1,0,0);
+        DesenhaBraco(0,baseHeight,theta1,theta2,theta3);
+
+        
+        DesenhaRoda(baseWidth/2,0,thetaWheel,1,1,1);
+        DesenhaRoda(-baseWidth/2,0,thetaWheel,1,1,1);
+        
     glPopMatrix();
 }
 
@@ -76,7 +101,8 @@ void Robo::RodaBraco3(GLfloat inc)
 
 void Robo::MoveEmX(GLfloat dx)
 {
-    this->gX += dx*50;
+    this->gX += dx*100;
+    this->gThetaWheel -= (dx*100/radiusWheel) *(180/M_PI);
 }
 
 //Funcao auxiliar de rotacao
@@ -84,7 +110,44 @@ void RotatePoint(GLfloat x, GLfloat y, GLfloat angle, GLfloat &xOut, GLfloat &yO
 
 }
 
+//Funcao auxiliar de translação
+void TranslatePoint(GLfloat x, GLfloat y, GLfloat dx, GLfloat dy, GLfloat &xOut, GLfloat &yOut){
+
+}
+
 Tiro* Robo::Atira()
 {
+    glLoadIdentity();
+    glPushMatrix();
+        GLfloat x,y;
+        RotatePoint(0,0,this->gTheta3,x,y);
+        TranslatePoint(x,y,0,paddleHeight,x,y);
 
+        RotatePoint(x,y,this->gTheta2,x,y);
+        TranslatePoint(x,y,0,paddleHeight,x,y);
+        
+        GLfloat x_vec, y_vec;
+
+        RotatePoint(x,y,this->gTheta1,x,y);
+        TranslatePoint(x,y,0,paddleHeight,x,y);
+        TranslatePoint(x,y,this->gX,this->gY,x,y);
+
+        GLint angulo = 0;
+        return new Tiro(x,y, angulo);
+
+    glPopMatrix();
+    /*
+        glTranslatef(x,y,0);
+        glRotatef(theta1,0,0,1);
+        DesenhaRect(paddleHeight,paddleWidth,0,0,1);
+        
+        glTranslatef(0,paddleHeight,0);
+        glRotatef(theta2,0,0,1);
+        DesenhaRect(paddleHeight,paddleWidth,1,1,0);
+
+
+        glTranslatef(0,paddleHeight,0);
+        glRotatef(theta3,0,0,1);
+        DesenhaRect(paddleHeight,paddleWidth,0,1,0);
+    */
 }
