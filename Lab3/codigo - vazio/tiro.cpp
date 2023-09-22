@@ -14,16 +14,16 @@ void Tiro::DesenhaCirc(GLint radius, GLfloat R, GLfloat G, GLfloat B)
         glPointSize(1);
         
         int qntdPoints = 360/20;
-        GLfloat x = 0;
+        GLfloat x = radius;
         GLfloat y = 0;
         glBegin(GL_POLYGON);
 
-        for (int p = 0; p < qntdPoints; p++){
-            
-            TranslatePoint(x,y,0,radius,x,y);
+            for (int p = 0; p < qntdPoints; p++){
+                
                 glVertex3f(x,y,0);   
-            RotatePoint( x,  y, 20,x, y);
-        }
+                RotatePoint( x,  y, 20,x, y);
+            }
+            
         glEnd();     
       
 
