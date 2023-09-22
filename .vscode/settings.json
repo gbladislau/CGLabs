@@ -2,5 +2,6 @@
     "files.associations": {
         "*.js": "javascript",
         "cmath": "cpp"
-    }
+    },
+    "C_Cpp.default.compilerPath": ""
 }
