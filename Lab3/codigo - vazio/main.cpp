@@ -38,7 +38,9 @@ void renderScene(void)
      if (tiro) tiro->Desenha();
      
      alvo.Desenha();
-
+    //  glBegin(GL_POINTS);
+    //     glVertex3f(0,80,0);
+    //  glEnd();
      glutSwapBuffers(); // Desenha the new frame of the game.
 }
 

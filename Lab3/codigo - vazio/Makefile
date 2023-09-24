@@ -1,5 +1,5 @@
 all:
-	g++ -o test *.cpp -lGL -lGLU -lglut
+	g++ -o test *.cpp -lGL -lGLU -lglut -lm
 
 run: all
 	./test
