@@ -1,6 +1,7 @@
 #include "tiro.h"
 #include <math.h>
 #include <cstdio>
+#include "point.h"
 #define DISTANCIA_MAX 500
 
 extern void RotatePoint(GLfloat x, GLfloat y, GLfloat angle, GLfloat &xOut, GLfloat &yOut);
@@ -9,19 +10,19 @@ extern void TranslatePoint(GLfloat x, GLfloat y, GLfloat dx, GLfloat dy, GLfloat
 
 void Tiro::DesenhaCirc(GLint radius, GLfloat R, GLfloat G, GLfloat B)
 {
+    glLoadIdentity();
     glPushMatrix();
         glColor3f(R,G,B);
         glPointSize(1);
         
-        int qntdPoints = 360/20;
-        GLfloat x = radius;
-        GLfloat y = 0;
+        int qntdPoints = 360/1;
+        Point2D point = Point2D(radius,0);
         glBegin(GL_POLYGON);
 
             for (int p = 0; p < qntdPoints; p++){
                 
-                glVertex3f(x,y,0);   
-                RotatePoint( x,  y, 20,x, y);
+                glVertex3f(point.getX(),point.getY(),0);   
+                point.RotateZ(20);
             }
             
         glEnd();     
@@ -32,8 +33,8 @@ void Tiro::DesenhaCirc(GLint radius, GLfloat R, GLfloat G, GLfloat B)
 
 void Tiro::DesenhaTiro(GLfloat x, GLfloat y)
 {
+    glLoadIdentity();
     glPushMatrix(); 
-    //printf("gx: %f gy: %f\n",x,y);
         glTranslatef(x,y,0);
         DesenhaCirc(radiusTiro,1,1,1);
     glPopMatrix();
@@ -41,6 +42,7 @@ void Tiro::DesenhaTiro(GLfloat x, GLfloat y)
 
 void Tiro::Move()
 {
+    glLoadIdentity();
     glPushMatrix();
         glRotatef(this->gDirectionAng,0,0,1);
         DesenhaTiro(this->gX,this->gY);

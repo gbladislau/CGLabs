@@ -1,4 +1,5 @@
 #include "robo.h"
+#include "point.h"
 #include <math.h>
 #include <iostream>
 #include <cstdio>
@@ -109,41 +110,42 @@ void Robo::MoveEmX(GLfloat dx)
 
 //Funcao auxiliar de rotacao
 void RotatePoint(GLfloat x, GLfloat y, GLfloat angle, GLfloat &xOut, GLfloat &yOut){
-    GLfloat ang_rad = angle *(180/M_PI);
-    std::cout << ang_rad << std::endl;
+    GLfloat ang_rad = angle *(M_PI/180.0);
+    //std::cout << ang_rad << std::endl;
     xOut = (x * cos(ang_rad)) - (y * sin(ang_rad));
     yOut = (x * sin(ang_rad)) + (y * cos(ang_rad));
-    printf("r %f  %f\n",xOut,yOut);
+   // printf("r %f  %f\n",xOut,yOut);
 }
 
 //Funcao auxiliar de translação
 void TranslatePoint(GLfloat x, GLfloat y, GLfloat dx, GLfloat dy, GLfloat &xOut, GLfloat &yOut){
     xOut = x+dx;
     yOut = y+dy;
-    printf("t %f %f\n",xOut,yOut);
+   // printf("t %f %f\n",xOut,yOut);
 }
 
 Tiro* Robo::Atira()
 {
     glLoadIdentity();
     glPushMatrix();
-        GLfloat x = 0;
-        GLfloat y = 0;
 
-        RotatePoint(x,y,this->gTheta3,x,y);
-        TranslatePoint(x,y,0,paddleHeight,x,y);
+        Point2D point = Point2D();
 
-        RotatePoint(x,y,this->gTheta2,x,y);
-        TranslatePoint(x,y,0,paddleHeight,x,y);
+        point.RotateZ(this->gTheta3);
+        //TranslatePoint(x,y,0,paddleHeight,x,y);
+
+        point.RotateZ(this->gTheta2);
+        //TranslatePoint(x,y,0,paddleHeight,x,y);
         
         GLfloat x_vec, y_vec;
 
-        RotatePoint(x,y,this->gTheta1,x,y);
-        TranslatePoint(x,y,0,paddleHeight,x,y);
-        TranslatePoint(x,y,this->ObtemX(),this->ObtemY(),x,y);
-        printf("f %f %f",x,y);
+        point.RotateZ(this->gTheta1);
+        //TranslatePoint(x,y,0,paddleHeight,x,y);
+        
+        //TranslatePoint(x,y,this->ObtemX(),this->ObtemY(),x,y);
+        //printf("f %f %f",x,y);
         GLint angulo = 0;
-        return new Tiro(x,y, angulo);
+        return new Tiro(point.getX(),point.getY(), angulo);
 
     glPopMatrix();
     /*
