@@ -44,10 +44,10 @@ void Tiro::DesenhaTiro(GLfloat x, GLfloat y)
     glPopMatrix();
 }
 
-void Tiro::Move()
+void Tiro::Move(GLdouble timedif)
 {
-    this->gX += this->gVel * cos(this->gDirectionAng);
-    this->gY += this->gVel * sin(this->gDirectionAng);
+    this->gX += (this->gVel * cos(this->gDirectionAng))*timedif;
+    this->gY += (this->gVel * sin(this->gDirectionAng))*timedif;
 }
 
 bool Tiro::Valido()

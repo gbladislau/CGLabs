@@ -105,8 +105,8 @@ void Robo::RodaBraco3(GLfloat inc)
 
 void Robo::MoveEmX(GLfloat dx)
 {
-    this->gX += dx*100;
-    this->gThetaWheel -= (dx*100/radiusWheel) *(180/M_PI);
+    this->gX += dx;
+    this->gThetaWheel -= (dx/radiusWheel) *(180/M_PI);
 }
 
 //Funcao auxiliar de rotacao
