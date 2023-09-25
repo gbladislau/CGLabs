@@ -53,7 +53,7 @@ void Tiro::Move()
 bool Tiro::Valido()
 {
     if( abs(this->gX) >= DISTANCIA_MAX/2 || abs(this->gY) >= DISTANCIA_MAX/2){
-        std::cout << "DELETOU TIRO" << std::endl;
+       // std::cout << "DELETOU TIRO" << std::endl;
         return false;
     }
     return true;

@@ -76,10 +76,10 @@ void Robo::DesenhaRobo(GLfloat x, GLfloat y, GLfloat thetaWheel, GLfloat theta1,
     glPushMatrix();
         glColor3f(1,1,1);
         glPointSize(6);
-        glBegin(GL_LINES);
-            glVertex3f(pontoDeApoio.getX(),pontoDeApoio.getY(),0);
-            glVertex3f(ponto2.getX(),ponto2.getY(),0);
-        glEnd();
+        // glBegin(GL_LINES);
+        //     glVertex3f(pontoDeApoio.getX(),pontoDeApoio.getY(),0);
+        //     glVertex3f(ponto2.getX(),ponto2.getY(),0);
+        // glEnd();
         glTranslatef(x,y,0);
         DesenhaRect(baseHeight,baseWidth,1,0,0);
         DesenhaBraco(0,baseHeight,theta1,theta2,theta3);
@@ -165,7 +165,7 @@ Tiro* Robo::Atira()
         ponto2.setY(point->getY());
 
         GLfloat angulo = point->AngleBeetwen(reference,*point);
-        std::cout <<  point->AngleBeetwen(reference,*point) << "\n" << angulo<< std::endl;
+        // std::cout <<  point->AngleBeetwen(reference,*point) << "\n" << angulo<< std::endl;
         return new Tiro(point->getX(),point->getY(), angulo);
 
     glPopMatrix();
