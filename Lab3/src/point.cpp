@@ -20,8 +20,8 @@ void Point2D::RotateZ(double angle)
 }
 
 float Point2D::AngleBeetwen(Point2D p1, Point2D p2){
-    double x = p1.getX() - p2.getX();
-    double y = p1.getY() - p2.getY();
+    double x = p2.getX() - p1.getX();
+    double y = p2.getY() - p1.getY();
     //std::cout << x <<" " << y << std::endl;
-    return (atan2(y,x)*180.0/M_PI);
+    return atan2(y,x);
 }

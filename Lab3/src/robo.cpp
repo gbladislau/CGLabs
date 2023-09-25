@@ -4,6 +4,7 @@
 #include <iostream>
 
 Point2D pontoDeApoio = Point2D();
+Point2D ponto2 = Point2D();
 
 void Robo::DesenhaRect(GLint height, GLint width, GLfloat R, GLfloat G, GLfloat B)
 {
@@ -75,8 +76,9 @@ void Robo::DesenhaRobo(GLfloat x, GLfloat y, GLfloat thetaWheel, GLfloat theta1,
     glPushMatrix();
         glColor3f(1,1,1);
         glPointSize(6);
-        glBegin(GL_POINTS);
+        glBegin(GL_LINES);
             glVertex3f(pontoDeApoio.getX(),pontoDeApoio.getY(),0);
+            glVertex3f(ponto2.getX(),ponto2.getY(),0);
         glEnd();
         glTranslatef(x,y,0);
         DesenhaRect(baseHeight,baseWidth,1,0,0);
@@ -145,17 +147,24 @@ Tiro* Robo::Atira()
         point->Translate(0,baseHeight);
 
         Point2D reference = Point2D();
+        // reference.Translate(0,paddleHeight);
+        // reference.RotateZ(this->gTheta3);
         reference.Translate(0,paddleHeight);
+        
         reference.RotateZ(this->gTheta2);
         reference.Translate(0,paddleHeight);
+
         reference.RotateZ(this->gTheta1);
-        reference.Translate(this->ObtemX(),this->ObtemY());  
-        reference.Translate(0,baseHeight);     
+        reference.Translate(this->ObtemX(),this->ObtemY());
+    
+        reference.Translate(0,baseHeight);
        
         pontoDeApoio.setX(reference.getX());
         pontoDeApoio.setY(reference.getY());
+        ponto2.setX(point->getX());
+        ponto2.setY(point->getY());
 
-        GLint angulo = point->AngleBeetwen(reference,*point);
+        GLfloat angulo = point->AngleBeetwen(reference,*point);
         std::cout <<  point->AngleBeetwen(reference,*point) << "\n" << angulo<< std::endl;
         return new Tiro(point->getX(),point->getY(), angulo);
 

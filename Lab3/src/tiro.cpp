@@ -38,10 +38,7 @@ void Tiro::DesenhaTiro(GLfloat x, GLfloat y)
 {
     glLoadIdentity();
     glPushMatrix(); 
-        // glBegin(GL_POINTS);
-        //     glVertex3f(this->gXInit,this->gYInit,0);
-        //     //std::cout << gXInit << " "<<gYInit<< std::endl;
-        // glEnd();
+        
         glTranslatef(x,y,0);
         DesenhaCirc(radiusTiro,1,1,1);
     glPopMatrix();
@@ -49,10 +46,8 @@ void Tiro::DesenhaTiro(GLfloat x, GLfloat y)
 
 void Tiro::Move()
 {
-    glPushMatrix();
-        
-        DesenhaTiro(this->gX,this->gY);
-    glPopMatrix();
+    this->gX += this->gVel * cos(this->gDirectionAng);
+    this->gY += this->gVel * sin(this->gDirectionAng);
 }
 
 bool Tiro::Valido()
