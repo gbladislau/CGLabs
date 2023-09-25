@@ -38,8 +38,11 @@ void Tiro::DesenhaTiro(GLfloat x, GLfloat y)
 {
     glLoadIdentity();
     glPushMatrix(); 
+        // glBegin(GL_POINTS);
+        //     glVertex3f(this->gXInit,this->gYInit,0);
+        //     //std::cout << gXInit << " "<<gYInit<< std::endl;
+        // glEnd();
         glTranslatef(x,y,0);
-        //std::cout << x << y << std::endl;
         DesenhaCirc(radiusTiro,1,1,1);
     glPopMatrix();
 }
@@ -47,19 +50,14 @@ void Tiro::DesenhaTiro(GLfloat x, GLfloat y)
 void Tiro::Move()
 {
     glPushMatrix();
-        glRotatef(this->gDirectionAng,0,0,1);
-
-        this->gX+=this->gVel;
-        this->gY+=this->gVel;
-
-        glTranslatef(this->gX,this->gY,0);
+        
         DesenhaTiro(this->gX,this->gY);
     glPopMatrix();
 }
 
 bool Tiro::Valido()
 {
-    if( this->gX >= DISTANCIA_MAX || this->gY >= DISTANCIA_MAX){
+    if( abs(this->gX) >= DISTANCIA_MAX/2 || abs(this->gY) >= DISTANCIA_MAX/2){
         std::cout << "DELETOU TIRO" << std::endl;
         return false;
     }

@@ -4,8 +4,6 @@ private:
     double x = 0.0;
     double y = 0.0;
 
-    void setX(double x){this->x = x;}
-    void setY(double y){this->y = y;}
 public:
     Point2D(double x, double y){
         this->x = x;
@@ -16,10 +14,13 @@ public:
         this->y = 0.0;
     }
 
+    void setX(double x){this->x = x;}
+    void setY(double y){this->y = y;}
     double getX(){ return this->x; }
     double getY(){ return this->y; }
 
     void RotateZ(double angle);
 
     void Translate (double dx, double dy);
+    float AngleBeetwen(Point2D p1, Point2D p2);
 };

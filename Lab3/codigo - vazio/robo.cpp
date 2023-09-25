@@ -2,6 +2,9 @@
 #include "point.h"
 #include <math.h>
 #include <iostream>
+
+Point2D pontoDeApoio = Point2D();
+
 void Robo::DesenhaRect(GLint height, GLint width, GLfloat R, GLfloat G, GLfloat B)
 {
     glColor3f(R,G,B);
@@ -13,11 +16,7 @@ void Robo::DesenhaRect(GLint height, GLint width, GLfloat R, GLfloat G, GLfloat 
         glVertex3f(-width/2,height, 0.0);
     glEnd();
 
-    // glColor3f(R,R,R);
-    // glPointSize(6);
-    // glBegin(GL_POINTS);
-    //     glVertex3f(0,0,0);
-    // glEnd();
+
 
 }
 
@@ -74,6 +73,11 @@ void Robo::DesenhaRobo(GLfloat x, GLfloat y, GLfloat thetaWheel, GLfloat theta1,
 {
     glLoadIdentity();
     glPushMatrix();
+        glColor3f(1,1,1);
+        glPointSize(6);
+        glBegin(GL_POINTS);
+            glVertex3f(pontoDeApoio.getX(),pontoDeApoio.getY(),0);
+        glEnd();
         glTranslatef(x,y,0);
         DesenhaRect(baseHeight,baseWidth,1,0,0);
         DesenhaBraco(0,baseHeight,theta1,theta2,theta3);
@@ -126,36 +130,36 @@ Tiro* Robo::Atira()
 
         Point2D * point = new Point2D();
 
+        // std::cout << point->getX() <<" " << point->getY() << std::endl;
+
         point->Translate(0,paddleHeight);
         point->RotateZ(this->gTheta3);
         point->Translate(0,paddleHeight);
-
+        
         point->RotateZ(this->gTheta2);
         point->Translate(0,paddleHeight);
-        
-        GLfloat x_vec, y_vec;
 
         point->RotateZ(this->gTheta1);
-        point->Translate(0,baseHeight);
         point->Translate(this->ObtemX(),this->ObtemY());
-        //printf("f %f %f",point->getX(),point->getY());
-        GLint angulo = 0;
+    
+        point->Translate(0,baseHeight);
+
+        Point2D reference = Point2D();
+        reference.Translate(0,paddleHeight);
+        reference.RotateZ(this->gTheta2);
+        reference.Translate(0,paddleHeight);
+        reference.RotateZ(this->gTheta1);
+        reference.Translate(this->ObtemX(),this->ObtemY());  
+        reference.Translate(0,baseHeight);     
+       
+        pontoDeApoio.setX(reference.getX());
+        pontoDeApoio.setY(reference.getY());
+
+        GLint angulo = point->AngleBeetwen(reference,*point);
+        std::cout <<  point->AngleBeetwen(reference,*point) << "\n" << angulo<< std::endl;
         return new Tiro(point->getX(),point->getY(), angulo);
 
     glPopMatrix();
-    /*
-        glTranslatef(x,y,0);
-        glRotatef(theta1,0,0,1);
-        DesenhaRect(paddleHeight,paddleWidth,0,0,1);
-        
-        glTranslatef(0,paddleHeight,0);
-        glRotatef(theta2,0,0,1);
-        DesenhaRect(paddleHeight,paddleWidth,1,1,0);
-
-        glTranslatef(0,paddleHeight,0);
-        glRotatef(theta3,0,0,1);
-        DesenhaRect(paddleHeight,paddleWidth,0,1,0);
-    */
     delete point;
 
 }
