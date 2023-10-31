@@ -73,24 +73,40 @@ void cross(float a[3], float b[3], float out[3])
 }
 
 //Aplica a transformacao que coloca o sistema de coordendas local em uma posicao 
-//do mundo definida por dois pontos a e b e um vetor up. O ponto b sera a origem,
+//do mundo definida por dois pontos a e b e um vetor up. O ponto b (p1) sera a origem,
 //o vetor BA = A - B sera determinara o novo y, o vetor up definira a orientacao
 //do novo z em torno de BA.
 //A matriz de transformacao no opengl eh armazanada transposta: 
 //m[4][4] = {Xx, Xy, Xz, 0.0, Yx, Yy, Yz, 0.0, Zx, Zy, Zz, 0.0, Tx, Ty, Tz, 1.0}
+// a = p2 b = p1
 void ChangeCoordSys(
-        GLdouble ax, GLdouble ay, GLdouble az, 
-        GLdouble bx, GLdouble by, GLdouble bz, 
-        GLdouble upx, GLdouble upy, GLdouble upz)
+        GLfloat ax, GLfloat ay, GLfloat az, 
+        GLfloat bx, GLfloat by, GLfloat bz, 
+        GLfloat upx, GLfloat upy, GLfloat upz)
 {
     float x[3], y[3], z[3];
-    GLfloat m[4][4] = { 1,0,0,0,
-                        0,1,0,0,
-                        0,0,1,0,
-                        0,0,0,1};
 
-	//COLOQUE SEU CODIGO AQUI
-    
+    // y linha
+    GLfloat p2_p1[3] = { ax - bx, ay - by, az - bz};
+    normalize(p2_p1);   
+    y[0] = p2_p1[0]; y[1] = p2_p1[1]; y[2] = p2_p1[2];
+
+    // x linha
+    GLfloat x_linha[3];
+    GLfloat up_v[3] = {upx,upy,upz}; 
+    cross(y,up_v,x_linha);
+    normalize(x_linha);
+    x[0] = x_linha[0]; x[1] = x_linha[1]; x[2] = x_linha[2];
+
+    // z linha
+    cross(x,y,z);
+
+    GLfloat m[4][4] = 
+        {x[0],x[1],x[2],0.0,
+         y[0],y[1],y[2],0.0,
+         z[0],z[1],z[2],0.0,
+         bx,by,bz,1.0};
+
     glMultMatrixf(&m[0][0]);
 }
 
@@ -138,14 +154,31 @@ void DrawAxes(double size)
 
 //ALTERE AQUI - SEU CODIGO AQUI
 //Usar meshlab para obter os pontos abaixo
-int pontoArmaAponta = 0;
-int pontoPosicaoArma = 0;
-int up[3] = {0, 0, 0};
+int pontoArmaAponta = 8501; //p2
+int pontoPosicaoArma = 2906; //p1
+int p_up1 = 2916;
+int p_up2 = 3143; ////         Up vector
+int p_up3 = 2697;
+// int up[3] = {0, 0, 1};
 void desenhaJogador(){
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
         //Translada para o centro do soldado para facilitar a rotacao da camera
         glTranslatef(0,-50,0);
+
+        float v1_x = soldado.vertsPos[p_up1].x - soldado.vertsPos[p_up2].x;
+        float v1_y = soldado.vertsPos[p_up1].y - soldado.vertsPos[p_up2].y;
+        float v1_z = soldado.vertsPos[p_up1].z - soldado.vertsPos[p_up2].z;
+
+        float v2_x = soldado.vertsPos[p_up1].x - soldado.vertsPos[p_up3].x;
+        float v2_y = soldado.vertsPos[p_up1].y - soldado.vertsPos[p_up3].y; 
+        float v2_z = soldado.vertsPos[p_up1].z - soldado.vertsPos[p_up3].z; 
+
+        float v1[3] = {v1_x,v1_y,v1_z};
+        float v2[3] = {v2_x,v2_y,v2_z};
+        float up[3];
+        cross(v2,v1,up);
+        // normalize(up);
 
         if (soldado_orig){
             soldado.draw();
@@ -179,9 +212,9 @@ void desenhaJogador(){
 //A matriz de transformacao no opengl eh armazanada transposta: 
 //m[4][4] = {Xx, Xy, Xz, 0.0, Yx, Yy, Yz, 0.0, Zx, Zy, Zz, 0.0, Tx, Ty, Tz, 1.0}
 void MygluLookAt(
-        GLdouble eyex, GLdouble eyey, GLdouble eyez, 
-        GLdouble centerx, GLdouble centery, GLdouble centerz, 
-        GLdouble upx, GLdouble upy, GLdouble upz)
+        GLfloat eyex, GLfloat eyey, GLfloat eyez, 
+        GLfloat centerx, GLfloat centery, GLfloat centerz, 
+        GLfloat upx, GLfloat upy, GLfloat upz)
 {
     float forward[3], side[3], up[3];
     //column-major order
