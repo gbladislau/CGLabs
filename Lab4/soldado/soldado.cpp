@@ -218,12 +218,29 @@ void MygluLookAt(
 {
     float forward[3], side[3], up[3];
     //column-major order
-    GLfloat m[4][4] = { 1,0,0,0,
-                        0,1,0,0,
-                        0,0,1,0,
+    
+    GLfloat p2_p1[3] = { centerx - eyex, centery - eyey, centerz - eyez};
+    normalize(p2_p1);   
+    forward[0] = p2_p1[0]; forward[1] = p2_p1[1]; forward[2] = p2_p1[2];
+
+    GLfloat x_linha[3];
+    GLfloat up_v[3] = {upx,upy,upz}; 
+    normalize(up_v);
+    cross(forward,up_v,x_linha);
+    normalize(x_linha);
+    side[0] = x_linha[0]; side[1] = x_linha[1]; side[2] = x_linha[2];
+
+    cross(side,forward,up);
+    normalize(up);
+
+    GLfloat m[4][4] = { side[0],up[0],-forward[0], 0,
+                        side[1],up[1],-forward[1],0,
+                        side[2],up[2],-forward[2],0,
                         0,0,0,1};
 
-	//COLOQUE SEU CODIGO AQUI
+
+    glMultMatrixf(&m[0][0]);
+    glTranslatef(-eyex, -eyey, -eyez);
 
 }
 
